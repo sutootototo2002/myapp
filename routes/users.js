@@ -113,9 +113,8 @@ router.post('/login', function (req, res) {
       responseData.message = "密码不能为空";
       return res.json(responseData);
   }
-  User.find({
-      username:username,
-      password:md5(password)
+  User.findOne({
+      username:username
   }).then(function(userInfo){
     console.log("登录信息：");
       console.log(userInfo);

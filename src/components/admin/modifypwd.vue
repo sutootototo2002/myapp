@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="tenth-login" id='registDiv'>
-    <div class='titleDiv'>修改密码{{mail}}-{{modifypwd}}</div>
+    <div class='titleDiv'>修改密码</div>
 <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
   <el-form-item label="新密码:" prop="password1">
     <el-input type="password" v-model="ruleForm2.password1" auto-complete="off"></el-input>
