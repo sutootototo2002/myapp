@@ -6,6 +6,7 @@ import regist from '../components/admin/regist.vue';
 import admin from '../components/admin/admin.vue';
 import sendmail from '../components/admin/sendmail.vue';
 import modifypwd from '../components/admin/modifypwd.vue';
+import usermanager from '../components/admin/usermanager.vue';
 import NotFoundComponent from '../components/NotFoundComponent.vue';
 
 Vue.use(VueRouter);
@@ -35,7 +36,14 @@ const router = new VueRouter({
         {
             path: '/admin',
             name: 'admin',
-            component: admin
+            component: admin,
+            children:[
+                {
+                    path: '/usermanager',
+                    name: 'usermanager',
+                    component: usermanager
+                }
+            ]
         },
         {
             path: '/regist',

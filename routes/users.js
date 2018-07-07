@@ -33,6 +33,29 @@ router.post('/loginout', function (req, res) {
   res.json(responseData);
 })
 
+/*管理员列表*/
+router.post('/usermanager', function (req, res) {
+    // responseData.code = 0;
+    // responseData.message='成功导出管理员列表！';
+    // res.json(responseData);
+    User.find().then(function(userInfo){
+        console.log("管理员列表：");
+        console.log(userInfo);
+        if(!userInfo){
+          responseData.code = -1;
+           responseData.message = "没有数据";
+           responseData.data={};
+           return res.json(responseData);
+        }else{
+            responseData.code = 0;
+           responseData.message = "成功导出管理员列表！";
+           res.cookie("userList",JSON.stringify(userInfo),{maxAge:1000*60*60*24});
+           return res.json(responseData);
+        }
+
+})
+  })
+
 /*修改密码*/
 router.post('/modifypwd', function (req, res) {
     // responseData.code = 0;
@@ -186,7 +209,8 @@ router.post('/regist',function(req,res,next){
      var user = new User({
          username:username,
          password:md5(password),
-         phone:phone
+         phone:phone,
+         mail:mail
      });
       return user.save();
       

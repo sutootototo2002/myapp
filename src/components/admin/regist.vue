@@ -153,7 +153,8 @@ export default {
        var param = {
             username:this.ruleForm2.username,
             password:this.ruleForm2.checkPass,
-            phone:this.ruleForm2.phone
+            phone:this.ruleForm2.phone,
+            mail:this.ruleForm2.mail
         }
         regist(param).then((res) => {
           console.log(res.data.code);

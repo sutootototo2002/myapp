@@ -2,12 +2,13 @@
     <div id='admin'>
       <el-container>
   <el-header>
+    <span>blog管理系统</span>
     <el-menu
   :default-active="activeIndex2"
   class="el-menu-demo"
   mode="horizontal"
   @select="handleSelect"
-  background-color="#545c64"
+  background-color="#1b6ec0"
   text-color="#fff"
   active-text-color="#ffd04b">
   <el-submenu index="2">
@@ -20,8 +21,34 @@
 
   </el-header>
   <el-container>
-    <el-aside width="200px">Aside</el-aside>
-    <el-main>Main</el-main>
+    <el-aside width="200px">
+      <el-col :span="12" style='width:100%'>
+    <el-menu
+      default-active="2" 
+      router
+      class="el-menu-vertical-demo"
+      @open="handleOpen"
+      @close="handleClose"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#fff">
+      <el-submenu index="1">
+        <template slot="title">
+          <span>用户管理</span>
+        </template>
+        <el-menu-item-group>
+         
+          <el-menu-item index="/usermanager">管理员列表</el-menu-item>
+          <el-menu-item index="1-2">权限管理</el-menu-item>
+           <el-menu-item index="1-2">角色管理</el-menu-item>
+        </el-menu-item-group>
+  
+      </el-submenu>
+      
+    </el-menu>
+  </el-col>
+    </el-aside>
+    <el-main><router-view></router-view></el-main>
   </el-container>
 </el-container>
     </div>
@@ -40,6 +67,12 @@ export default {
     this.loginInfo = JSON.parse(this.$cookies.get('login'));
   },
   methods: {
+     handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
@@ -71,8 +104,8 @@ export default {
 .welcomeSpan{display:inline-block;padding:0px 10px;font-size:15px;}
 #admin .el-header,
 #admin .el-footer {
-  background-color: rgb(84, 92, 100);
-  color: #333;
+  background-color: #1b6ec0;
+  color: #fff;
   text-align: center;
   line-height: 60px;
   padding:0;
@@ -85,11 +118,30 @@ export default {
    float:right
 }
 
+#admin .el-submenu {
+    text-align: left;
+  
+}
+#admin .el-main {
+  line-height:33px;
+}
+
+#admin .el-submenu .el-menu-item {
+    
+    min-width: 150px;
+}
+
 .el-aside {
-  background-color: #d3dce6;
+   background-color: rgb(84, 92, 100);
   color: #333;
   text-align: center;
-  line-height: 200px;
+  height:1000px;
+}
+
+
+#admin .el-menu {
+    border-right: solid 1px #b65207;
+    
 }
 
 .el-main {
