@@ -11,3 +11,5 @@ export const loginout = params => { return axios.post(`${base}/admin/loginout`, 
 export const login = params => { return axios.post(`${base}/admin/login`, { params: params }); };
 //mail
 export const sendmail = params => { return axios.post(`${base}/admin/sendmail`, { params: params }); };
+//修改密码
+export const modifypwd = params => { return axios.post(`${base}/admin/modifypwd`, { params: params }); };

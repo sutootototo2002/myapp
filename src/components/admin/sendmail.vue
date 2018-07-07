@@ -5,6 +5,9 @@
   <el-form-item label="请输入邮箱:" prop="mail">
     <el-input type="text" v-model="ruleForm2.mail" auto-complete="off"></el-input>
   </el-form-item>
+        <el-form-item>
+      <div class='loginInfo'><a href="javascript:;" @click='turnPath()'>直接登录</a></div>
+    </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm2')">发送邮件</el-button>
     <el-button @click="resetForm('ruleForm2')">重置</el-button>
@@ -73,24 +76,25 @@ export default {
     },
     //跳转
     turnPath(){
-      this.$router.push({ path: '/regist' });
+      this.$router.push({ path: '/login' });
     },
     //用户提交接口
     userSubmit(){
       //alert('用户提交');
       var that = this;
        var param = {
-            username:this.ruleForm2.username,
-            password:this.ruleForm2.checkPass
+            mail:this.ruleForm2.mail
         }
         sendmail(param).then((res) => {
           console.log(res.data.code);
           if(res.data.code === 0){
              that.$message({
-              message: '发送邮件成功！',
+              message: '发送邮件成功！到 '+res.data.mail[0],
              type: 'success'
         });
-            //this.$cookies.set('abc','suxiaoyan')
+          console.log("mail:00");
+          console.log(this.$cookies.get('mail'));
+          //that.$router.push({path:'/modifypwd'});
           }else{
              that.$message({
               message: res.data.message,

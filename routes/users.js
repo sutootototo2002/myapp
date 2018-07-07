@@ -2,7 +2,10 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
 var md5 = require('md5-node');
-const nodemailer = require('nodemailer'); //邮件模块
+var mailer        = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
+
+
 
 //统一返回格式
 var responseData;
@@ -29,56 +32,65 @@ router.post('/loginout', function (req, res) {
   responseData.message='退出成功！';
   res.json(responseData);
 })
+
+/*修改密码*/
+router.post('/modifypwd', function (req, res) {
+    // responseData.code = 0;
+    // responseData.message='修改密码成功';
+    // res.json(responseData);
+    var mail = req.body.params.mail;
+    var password = md5(req.body.params.password);
+    User.update({"mail":mail},{"password":password}).then(function(info){
+           console.log("修改：");
+           console.log(info.ok);
+           responseData.code = 0;
+           responseData.message = "修改成功！";
+           //responseData.userInfo = userInfo;
+           //res.cookie("login",JSON.stringify(userInfo),{maxAge:1000*60*60*24});
+           res.json(responseData);
+    })
+  })
+
 /*发送邮件*/ 
-/*退出登录*/
 router.post('/sendmail', function (req, res) {
   // responseData.code = 0;
   // responseData.message='邮件发送成功！';
   // res.json(responseData);
-nodemailer.createTestAccount((err, account) => {
-    // create reusable transporter object using the default SMTP transport
-    // let transporter = nodemailer.createTransport({
-    //     host: 'smtp.ethereal.email',
-    //     port: 587,
-    //     secure: false, // true for 465, false for other ports
-    //     auth: {
-    //         user: account.user, // generated ethereal user
-    //         pass: account.pass // generated ethereal password
-    //     }
-    // });
-    let transporter = nodemailer.createTransport({
-      // host: 'smtp.ethereal.email',
-      service: 'smtp.qq.com', // 使用了内置传输发送邮件 查看支持列表：https://nodemailer.com/smtp/well-known/
-      port: 465, // SMTP 端口
-      secureConnection: true, // 使用了 SSL
-      auth: {
+  console.log(req.body);
+  var mail = req.body.params.mail;
+
+  console.log("username");
+  console.log(mail);
+  var transport = mailer.createTransport(smtpTransport({
+    host: 'smtp.qq.com',
+    port: 465,
+    auth: {
         user: '105807174@qq.com',
-        // 这里密码不是qq密码，是你设置的smtp授权码
-        pass: 'lmcnjaypijhbcafa',
-      }
-    });
+        pass: 'lmcnjaypijhbcafa'
+    }
+}));
 
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: '"Fred Foo 👻" <105807174@qq.com>', // sender address
-        to: 'sutootototo2002@163.com', // list of receivers
-        subject: 'Hello ✔', // Subject line
-        text: 'Hello world?', // plain text body
-        html: '<b>Hello world?</b>' // html body
-    };
+var mailOptions = {
+    from: '苏晓燕 <105807174@qq.com>', // 如果不加<xxx@xxx.com> 会报语法错误
+    to: mail, // list of receivers
+    subject: '密码修改邮件', // Subject line
+    html: ' <p> 密码修改邮件</p> ' +
+	'<p> 修改密码链接 <a href=\"http://localhost/modifypwd?mail='+mail+'\">http://localhost/modifypwd</a></p>'// html body
+};
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: %s', info.messageId);
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-    });
+transport.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+    }else{
+        console.log('Message sent: ' );
+        console.log(info);
+        responseData.code = 0;
+        responseData.message = "邮件发送成功！";
+        responseData.mail = info. accepted;
+        var mailInfo = {mailname:mail}
+        res.cookie("mail",JSON.stringify(mailInfo),{maxAge:1000*60*60*24});
+        return res.json(responseData);
+    }
 });
 });
 /*登录*/
@@ -101,10 +113,11 @@ router.post('/login', function (req, res) {
       responseData.message = "密码不能为空";
       return res.json(responseData);
   }
-  User.findOne({
+  User.find({
       username:username,
       password:md5(password)
   }).then(function(userInfo){
+    console.log("登录信息：");
       console.log(userInfo);
       if(!userInfo){
         responseData.code = -1;
@@ -135,6 +148,7 @@ router.post('/regist',function(req,res,next){
  var username = req.body.params.username;
  var password = req.body.params.password;
  var phone = req.body.params.phone;
+ var mail = req.body.params.mail;
  if (username === "") {
      responseData.code = 1;
      responseData.message = "用户名不能为空";
@@ -152,6 +166,12 @@ router.post('/regist',function(req,res,next){
      return res.json(responseData);
      
  }
+ if (mail === "") {
+    responseData.code = 1;
+    responseData.message = "邮箱号不能为空";
+    return res.json(responseData);
+    
+}
  var reqq = req;
 
  User.findOne({

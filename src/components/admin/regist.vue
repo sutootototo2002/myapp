@@ -8,6 +8,9 @@
   <el-form-item label="密  码:" prop="checkPass">
     <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
   </el-form-item>
+    <el-form-item label="邮 箱:" prop="mail">
+    <el-input type="text" v-model="ruleForm2.mail" auto-complete="off"></el-input>
+  </el-form-item>
   <el-form-item label="手机号:" prop="phone">
     <el-input v-model.number="ruleForm2.phone"></el-input>
   </el-form-item>
@@ -30,6 +33,23 @@ import { verificode,regist } from "../../api/api.js";
 import { showtime } from "../../common/common.js";
 export default {
   data() {
+            var validateMail = (rule, value, callback) => {
+      if (!value) {       
+        return callback(new Error("邮箱不能为空！"));
+      }
+      
+      setTimeout(() => {
+          var myreg = /^[A-Za-z0-9_-]+([-_.][A-Za-z0-9_-]+)*@([A-Za-z0-9_-]+[-.])+[A-Za-zd]{2,5}$/;
+          // /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+          if (!myreg.test(value)) {
+            callback(new Error("邮箱格式不正确"));
+          } else {
+            
+            callback();
+          }
+        
+      }, 1000);
+    };
     var checkNumber = (rule, value, callback) => {
       if (!value) {       
         return callback(new Error("验证码不能为空！"));
@@ -94,6 +114,7 @@ export default {
       ruleForm2: {
         username: "",
         checkPass: "",
+        mail:"",
         phone: "",
         yznumber: ""
       },
@@ -101,7 +122,8 @@ export default {
         username: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
         phone: [{ validator: checkAge, trigger: "blur" }],
-        yznumber: [{ validator: checkNumber, trigger: "blur" }]
+        yznumber: [{ validator: checkNumber, trigger: "blur" }],
+        mail: [{ validator: validateMail, trigger: "blur" }]
       }
     };
   },

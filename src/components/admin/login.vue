@@ -9,7 +9,7 @@
     <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
   </el-form-item>
     <el-form-item>
-      <div class='loginInfo'><a href="javascript:;" @click='turnPath()'>用户注册</a> <a href="javascript:;">忘记密码</a></div>
+      <div class='loginInfo'><a href="javascript:;" @click="turnPath('/regist')">用户注册</a> <a href="javascript:;" @click="turnPath('/sendmail')">忘记密码</a></div>
     </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
@@ -71,8 +71,8 @@ export default {
       this.$refs[formName].resetFields();
     },
     //跳转
-    turnPath(){
-      this.$router.push({ path: '/regist' });
+    turnPath(path){
+      this.$router.push({ path: path });
     },
     //用户提交接口
     userSubmit(){
